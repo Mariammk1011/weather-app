@@ -33,8 +33,17 @@ mainIconElement.setAttribute("src", `https://openweathermap.org/img/wn/${respons
 mainIconElement.setAttribute("alt", response.data.weather[0].description);
 }
 
+function search(city) {
 let apiKey = "b6aefae8ac070717f2210e8f9499d061"; 
-let city = "London";
 let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`; 
-
 axios.get(apiUrl).then(displayTemperature); 
+}
+
+function handleSubmit(event){
+    event.preventDefault();
+    let cityInputElement = document.querySelector("#city-input");
+    search(cityInputElement.value); 
+}
+
+let form = document.querySelector("#search-form"); 
+form.addEventListener("submit", handleSubmit);
