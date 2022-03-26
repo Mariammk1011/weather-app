@@ -13,6 +13,32 @@ function formatDate(timestamp){
     return `${day} ${hours}:${minutes}`;
 }
 
+function displayWeekWeatherDate() {
+    let weekWeatherDateElement = document.querySelector("#week-weather")
+
+    let weekHTML = `<div class="row">`;
+    let days = ["Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    days.forEach(function(day) {
+        weekHTML = weekHTML + 
+        `
+        <div class="col-2">
+          <div class="week-weather-date">
+      ${day}</div> 
+      <img 
+      src ="https://openweathermap.org/img/wn/01d@2x.png"
+      alt=""
+      width="30"/>
+      <div class="week-weather-temp">
+        <span class="week-weather-max">13°</span> <span class="week-weather-min">3°</span>
+      </div>
+        </div>
+`; 
+    });
+
+   weekHTML = weekHTML + `</div>`
+weekWeatherDateElement.innerHTML = weekHTML; 
+}
+
 function displayTemperature(response) {
 
 let temperatureElement = document.querySelector("#temperature"); 
@@ -22,6 +48,8 @@ let humidityElement = document.querySelector("#humidity");
 let windElement = document.querySelector("#wind"); 
 let dateElement = document.querySelector("#date"); 
 let mainIconElement = document.querySelector("#main-icon"); 
+
+displayWeekWeatherDate();
 
 celsiusTemperature = Math.round(response.data.main.temp); 
 
