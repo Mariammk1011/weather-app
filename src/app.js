@@ -13,30 +13,48 @@ function formatDate(timestamp){
     return `${day} ${hours}:${minutes}`;
 }
 
-function displayWeekWeatherDate() {
-    let weekWeatherDateElement = document.querySelector("#week-weather")
+function formatDay(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let day = date.getDay();
+    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+
+    return days[day];
+}
+
+function displayWeekWeather(response) {
+    let forecast = response.data.daily; 
+    let weekWeatherElement = document.querySelector("#week-weather")
 
     let weekHTML = `<div class="row">`;
-    let days = ["Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    days.forEach(function(day) {
+    forecast.forEach(function (forecastDay, index) {
+        if (index < 6) {
         weekHTML = weekHTML + 
         `
         <div class="col-2">
           <div class="week-weather-date">
-      ${day}</div> 
+      ${formatDay(forecastDay.dt)}</div> 
       <img 
-      src ="https://openweathermap.org/img/wn/01d@2x.png"
+      src ="https://openweathermap.org/img/wn/${forecastDay.weather[0].icon}@2x.png"
       alt=""
       width="30"/>
       <div class="week-weather-temp">
-        <span class="week-weather-max">13°</span> <span class="week-weather-min">3°</span>
+        <span class="week-weather-max">${Math.round (forecastDay.temp.max)}°</span> <span class="week-weather-min">${Math.round (forecastDay.temp.min)}°</span>
       </div>
         </div>
 `; 
+}
     });
 
-   weekHTML = weekHTML + `</div>`
-weekWeatherDateElement.innerHTML = weekHTML; 
+weekHTML = weekHTML + `</div>`
+weekWeatherElement.innerHTML = weekHTML; 
+}
+
+function getWeekWeather(coordinates){
+    console.log(coordinates); 
+    let apiKey = "b6aefae8ac070717f2210e8f9499d061"; 
+    let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayWeekWeather);
 }
 
 function displayTemperature(response) {
@@ -49,8 +67,6 @@ let windElement = document.querySelector("#wind");
 let dateElement = document.querySelector("#date"); 
 let mainIconElement = document.querySelector("#main-icon"); 
 
-displayWeekWeatherDate();
-
 celsiusTemperature = Math.round(response.data.main.temp); 
 
 temperatureElement.innerHTML = (celsiusTemperature);
@@ -61,6 +77,8 @@ windElement.innerHTML = Math.round (response.data.wind.speed);
 dateElement.innerHTML = formatDate(response.data.dt * 1000);
 mainIconElement.setAttribute("src", `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`);
 mainIconElement.setAttribute("alt", response.data.weather[0].description);
+
+getWeekWeather(response.data.coord);
 }
 
 function search(city) {
