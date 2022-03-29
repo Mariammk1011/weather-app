@@ -50,12 +50,28 @@ weekHTML = weekHTML + `</div>`
 weekWeatherElement.innerHTML = weekHTML; 
 }
 
+function searchLocation(position) {
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
+  let apiKey = "b6aefae8ac070717f2210e8f9499d061"; 
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+
+  axios.get(apiUrl).then(displayTemperature);
+}
+
+function getCurrentLocation(event) {
+  event.preventDefault();
+  navigator.geolocation.getCurrentPosition(searchLocation);
+}
+
 function getWeekWeather(coordinates){
-    console.log(coordinates); 
     let apiKey = "b6aefae8ac070717f2210e8f9499d061"; 
     let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&units=metric`;
     axios.get(apiUrl).then(displayWeekWeather);
 }
+
+let currentLocationButton = document.querySelector("#current-location");
+currentLocationButton.addEventListener("click", getCurrentLocation);
 
 function displayTemperature(response) {
 
